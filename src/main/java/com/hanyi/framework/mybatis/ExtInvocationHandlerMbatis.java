@@ -1,5 +1,6 @@
 package com.hanyi.framework.mybatis;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.hanyi.framework.annotation.ExtInsert;
 import com.hanyi.framework.annotation.ExtParam;
 import com.hanyi.framework.annotation.ExtSelect;
@@ -41,13 +42,13 @@ public class ExtInvocationHandlerMbatis implements InvocationHandler {
 		// @ExtInsert封装过程
 		// 1. 判断方法上是否存在@ExtInsert
 		ExtInsert extInsert = method.getDeclaredAnnotation(ExtInsert.class);
-		if (extInsert != null) {
+		if (ObjectUtil.isNotNull(extInsert)) {
 			return extInsert(extInsert, method, args);
 		}
 		// 2.查询的思路
 		// 1. 判断方法上是否存在注解
 		ExtSelect extSelect = method.getDeclaredAnnotation(ExtSelect.class);
-		if (extSelect != null) {
+		if (ObjectUtil.isNotNull(extSelect)) {
 			// 2. 获取注解上查询的SQL语句
 			String selectSQL = extSelect.value();
 			// 3. 获取方法上的参数,绑定在一起
@@ -130,7 +131,7 @@ public class ExtInvocationHandlerMbatis implements InvocationHandler {
 		for (int i = 0; i < parameters.length; i++) {
 			Parameter parameter = parameters[i];
 			ExtParam extParam = parameter.getDeclaredAnnotation(ExtParam.class);
-			if (extParam != null) {
+			if (ObjectUtil.isNotNull(extParam)) {
 				// 参数名称
 				String paramName = extParam.value();
 				Object paramValue = args[i];

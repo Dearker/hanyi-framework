@@ -6,7 +6,10 @@ import java.util.*;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.hanyi.framework.annotation.ExtResource;
 import com.hanyi.framework.annotation.ExtService;
 import com.hanyi.framework.mybatis.ExtInitMapper;
@@ -21,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Version: 1.0
  */
 public class ExtClassPathXmlApplication {
+
+    private static final Log logger = LogFactory.get(ExtClassPathXmlApplication.class);
 
     private String[] packageNames;
 
@@ -51,7 +56,7 @@ public class ExtClassPathXmlApplication {
         return object;
     }
 
-    private Map<Set<String>, Object> initSpringIoc() {
+    private void initSpringIoc() {
 
         if (ArrayUtil.isNotEmpty(packageNames)) {
 
@@ -66,21 +71,16 @@ public class ExtClassPathXmlApplication {
 
                         setSpringIocMapKey(classInfo, stringSet);
 
-                        try {
-                            Object object = classInfo.newInstance();
-                            springIocMap.put(stringSet, object);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        Object object = ReflectUtil.newInstance(classInfo);
+                        springIocMap.put(stringSet, object);
                     }
 
                 }
             }
             setParentMap();
             initAttriAssign(springIocMap);
-            return springIocMap;
+            logger.info("Spring IOC init Finished");
         }
-        return null;
     }
 
 
@@ -103,15 +103,12 @@ public class ExtClassPathXmlApplication {
                             // 私有访问允许访问
                             field.setAccessible(true);
                             // 给属性赋值
-                            try {
-                                field.set(object, bean);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
+                            ReflectUtil.setFieldValue(object,field,bean);
                         }
                     }
                 }
             });
+            logger.info("Spring Attribute Assign Finished");
         }
     }
 
@@ -138,6 +135,7 @@ public class ExtClassPathXmlApplication {
         Map<Set<String>, Object> initMapperMap = extInitMapper.initMapper();
 
         if (CollUtil.isNotEmpty(initMapperMap)) {
+            logger.info("Spring ParentMap init Finished");
             springIocMap.putAll(initMapperMap);
         }
     }
