@@ -40,7 +40,7 @@ public class ExtClassPathXmlApplication {
         return getBean(beanId, springIocMap);
     }
 
-    public Object getBean(String beanId, Map<Set<String>, Object> iocMap) {
+    private Object getBean(String beanId, Map<Set<String>, Object> iocMap) {
 
         if (StrUtil.isBlank(beanId)) {
             throw new IllegalArgumentException("beanId cannot empty");

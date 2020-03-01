@@ -24,7 +24,7 @@ public class ExtInvocationHandlerMbatis implements InvocationHandler {
 
 	private Object object;
 
-	public ExtInvocationHandlerMbatis(Object object) {
+	ExtInvocationHandlerMbatis(Object object) {
 		this.object = object;
 	}
 

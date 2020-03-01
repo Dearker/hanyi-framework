@@ -35,7 +35,7 @@ public class ExtSpringApplication {
 
     private static final String FILEPATH = "src/main";
 
-    public ExtSpringApplication(String... packageName) {
+    private ExtSpringApplication(String... packageName) {
         new ExtDispatcherServlet(packageName);
     }
 
